@@ -21,4 +21,5 @@
   仿射轉換	
   二值化
   檔案儲存		
+  \https://blog.csdn.net/qq_30460905/article/details/88383410
 
