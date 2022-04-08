@@ -21,5 +21,13 @@
   仿射轉換	
   二值化
   檔案儲存		
-  \https://blog.csdn.net/qq_30460905/article/details/88383410
-
+  
+  版本參考網址:
+  
+  https://blog.csdn.net/qq_30460905/article/details/88383410
+  
+  https://www.tpisoftware.com/tpu/articleDetails/1977
+  
+  https://blog.csdn.net/qq_41498261/article/details/103228062
+  
+  https://www.twblogs.net/a/5d301257bd9eee51742175d6
