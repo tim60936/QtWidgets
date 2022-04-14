@@ -1,9 +1,9 @@
 ﻿#pragma once
-
 #include <QtWidgets/QMainWindow>
 #include <opencv2/opencv.hpp>
 #include <opencv2/imgproc/types_c.h>
 #include <ui_QtWidgets.h>
+
 
 class QtWidgets : public QMainWindow
 {
@@ -14,6 +14,8 @@ public:
 
     int globalMark;//儲存標記用
     QImage globalImg;//儲存圖片用
+    int count = 0;
+    cv::Point2i point_lt, point_rt, point_rb, point_lb;
     cv::Mat QImage2cvMat(QImage image)
     {
         cv::Mat mat;
@@ -37,8 +39,9 @@ public:
 
 private:
     Ui::QtWidgetsClass ui;
+    QLabel* label;
 
-/// slots 函數宣告
+// slots 函數宣告
 private slots:
     void openFile();
     void savefile();
@@ -48,4 +51,8 @@ private slots:
     void QequalizeHist();
     void change2Gray();
     void change2HSV();
+    void rotate();
+    void QRGB();
+    void perspective();
+    void mousePressEvent(QMouseEvent* event);
 };
