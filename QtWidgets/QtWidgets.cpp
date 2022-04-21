@@ -348,18 +348,17 @@ void QtWidgets::mousePressEvent(QMouseEvent* event)
 				point_rt.y = label_pos.y();
 				break;
 			case 3:
+				ui.lineEdit_LB->setText(point);
+				point_lb.x = label_pos.x();
+				point_lb.y = label_pos.y();
+				break;
+			case 4:
 				ui.lineEdit_RB->setText(point);
 				point_rb.x = label_pos.x();
 				point_rb.y = label_pos.y();
-				break;
-			case 4:
-				ui.lineEdit_LB->setText(point);
-				point_lb.x = label_pos.x();
-                point_lb.y = label_pos.y();
 				break;
 			}
 		}
 	}
 }
-//23
-
+//透視轉換 點位調整 精簡化程式 github目錄調整 簡報優善
