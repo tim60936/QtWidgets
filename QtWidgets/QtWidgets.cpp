@@ -19,6 +19,27 @@ QtWidgets::QtWidgets(QWidget *parent)
     : QMainWindow(parent)
 {
     ui.setupUi(this);
+
+	//QAction
+	QObject::connect(ui.openBtn, &QAction::triggered, this, &QtWidgets::openFile);
+	QObject::connect(ui.saveBtn, &QAction::triggered, this, &QtWidgets::saveFile);
+
+	//Btn
+	connect(ui.roiBtn, SIGNAL(clicked()), this, SLOT(ROI()));
+	connect(ui.perBtn, SIGNAL(clicked()), this, SLOT(perspective()));
+	connect(ui.hsvBtn, SIGNAL(clicked()), this, SLOT(change2HSV()));
+	connect(ui.histogramBtn, SIGNAL(clicked()), this, SLOT(histogram()));
+	connect(ui.grayBtn, SIGNAL(clicked()), this, SLOT(change2Gray()));
+	connect(ui.equalHistBtn, SIGNAL(clicked()), this, SLOT(QequalizeHist()));
+
+	//QSlider
+	connect(ui.thresholdSlider, SIGNAL(valueChange(int)), this, SLOT(Qthreshold()));
+	connect(ui.rotate_x, SIGNAL(valueChange(int)), this, SLOT(rotate()));
+	connect(ui.rotate_y, SIGNAL(valueChange(int)), this, SLOT(rotate()));
+	connect(ui.rotate_z, SIGNAL(valueChange(int)), this, SLOT(rotate()));
+	connect(ui.RSlider, SIGNAL(valueChange(int)), this, SLOT(QRGB()));
+	connect(ui.GSlider, SIGNAL(valueChange(int)), this, SLOT(QRGB()));
+	connect(ui.BSlider, SIGNAL(valueChange(int)), this, SLOT(QRGB()));
 }
 
 //開啟圖片
@@ -36,9 +57,14 @@ void QtWidgets::openFile()
 	else
 	{
 		QImage img(fileName);
-		img = img.scaled(ui.label_Image->width(), ui.label_Image->height(), Qt::KeepAspectRatio);//Qt::KeepAspectRatio自適應大小，不變形
+		img = img.scaled(ui.label_Image->width(), ui.label_Image->height(), Qt::KeepAspectRatio);
 		ui.label_Image->setPixmap(QPixmap::fromImage(img));
-		ui.image_message->setText("檔名:" + file_name + " 寬:" + img.width() + " 高:" + img.height());
+
+		QSize imgsize = ui.label_Image->pixmap()->size();
+		QString imgh = QString("(%1)").arg(imgsize.height());
+		QString imgw = QString("(%1)").arg(imgsize.width());
+		consoleLog("OpenFile", file_name, fileName,"寬"+imgw+"高"+imgh);
+
 		waitKey();
 		if (img.isNull())
 		{
@@ -48,23 +74,23 @@ void QtWidgets::openFile()
 }
 
 //儲存圖片
-void QtWidgets::savefile()
+void QtWidgets::saveFile()
 {
 	if (ui.label_Image->pixmap() != nullptr) {
 		QString filename = QFileDialog::getSaveFileName(this,
 			tr("save image file"),"./",tr("*.png;; *.jpg;; *.bmp;; *.tif;; *.GIF")); //路徑選擇
 		if (filename.isEmpty())
 		{
-			QMessageBox::warning(this, "警告", "儲存失敗");
+			consoleLog("SaveFile", "警告", "", "儲存失敗");
 			return;
 		}
 		else
 		{
 			ui.label_Image->pixmap()->toImage().save(filename);
-			QMessageBox::information(this, "提示", "儲存成功");
+			consoleLog("SaveFile","訊息", filename, "儲存成功");
 		}
 	}
-	else {QMessageBox::warning(this, "警告", "請先開啟圖片");}
+	else { consoleLog("SaveFile", "警告", "", "儲存失敗"); }
 }
 
 //ROI
@@ -219,28 +245,26 @@ void QtWidgets::QequalizeHist() {
 //翻轉圖片
 void QtWidgets::rotate(){
 	Mat Ori_image = QImage2cvMat(ui.label_Image->pixmap()->toImage());
-	//namedWindow("original", 0);
-	//imshow("original", Ori_image);
 	//轉換圖
 	copyMakeBorder(Ori_image, Ori_image, 0, 0, 0, 0, BORDER_CONSTANT, 0);
 	//高寬xyz
 	int h = Ori_image.cols;
 	int w = Ori_image.rows;
-	double anglex = ui.rotate_x->value();//上下幅度
-	double angley = ui.rotate_y->value();;//左右
+	double angley = ui.rotate_y->value();//上下幅度
+	double anglex = ui.rotate_x->value();;//左右
 	double anglez = ui.rotate_z->value();;//旋轉角度
 	double fov = 50;
 	//可視範圍
 	double z = sqrt(w * w + h * h) / 2.0 / tan((fov / 2.0) * CV_PI / 180.0);
 	// 變換矩陣
-	double arr_x[4][4] = { 1,0,0,0,0,cos(anglex * CV_PI / 180.0),-sin(anglex * CV_PI / 180.0),0,0,-sin(anglex * CV_PI / 180.0),cos(anglex * CV_PI / 180.0),0,0,0,0,1 };
-	double arr_y[4][4] = { cos(angley * CV_PI / 180.0),0,sin(angley * CV_PI / 180.0),0,0,1,0,0,-sin(angley * CV_PI / 180.0),0,cos(angley * CV_PI / 180.0),0,0,0,0,1 };
+	double arr_xy[4][4] = { 1,0,0,0,0,cos(angley * CV_PI / 180.0),-sin(angley * CV_PI / 180.0),0,0,-sin(angley * CV_PI / 180.0),cos(angley * CV_PI / 180.0),0,0,0,0,1 };
+	double arr_x[4][4] = { cos(anglex * CV_PI / 180.0),0,sin(anglex * CV_PI / 180.0),0,0,1,0,0,-sin(anglex * CV_PI / 180.0),0,cos(anglex * CV_PI / 180.0),0,0,0,0,1 };
 	double arr_z[4][4] = { cos(anglez * CV_PI / 180.0),sin(anglez * CV_PI / 180.0),0,0,-sin(anglez * CV_PI / 180.0),cos(anglez * CV_PI / 180.0),0,0,0,0,1,0,0,0,0,1 };
-	Mat rx(4, 4, CV_64F, arr_x);
-	Mat ry(4, 4, CV_64F, arr_y);
+	Mat rx(4, 4, CV_64F, arr_xy);
+	Mat ry(4, 4, CV_64F, arr_x);
 	Mat rz(4, 4, CV_64F, arr_z);
 	Mat r = rx * ry * rz;
-	//對角點的生成
+	//對角點的生成																													
 	double arr_center[4] = { h / 2.0,w / 2.0,0,0 };
 	Mat pcenter(1, 4, CV_64F, arr_center);
 	double arr_t1[4] = { 0,0,0,0 }, arr_t2[4] = { w,0,0,0 }, arr_t3[4] = { 0,h,0,0 }, arr_t4[4] = { w,h,0,0 };
@@ -276,9 +300,9 @@ void QtWidgets::QRGB() {
 	Mat rgb_image;
 	cvtColor(Ori_image, rgb_image, COLOR_RGB2BGR);
 	cvtColor(rgb_image, rgb_image, COLOR_BGR2RGB);
-	int rgb_r = ui.RGB_R->value();
-	int rgb_g = ui.RGB_G->value();
-	int rgb_b = ui.RGB_B->value();
+	int rgb_r = ui.RSlider->value();
+	int rgb_g = ui.GSlider->value();
+	int rgb_b = ui.BSlider ->value();
 	for (int i = 0; i < Ori_image.rows; i++)
 	{
 		for (int j = 0; j < Ori_image.cols; j++)
@@ -321,7 +345,7 @@ void QtWidgets::perspective(){
 void QtWidgets::mousePressEvent(QMouseEvent* event)
 {
 	// 如果有勾選、按下滑鼠左鍵、左上順時鐘挑選
-	if (event->button() == Qt::LeftButton && ui.per_bt_choose->isChecked() == true) {
+	if (event->button() == Qt::LeftButton && ui.perBtnChoose->isChecked() == true) {
 		QPoint global_pos = event->globalPos();
 		//QPoint label_pos = label->mapFromGlobal(global_pos);
 		QPoint label_pos = ui.label_Image->mapFromGlobal(global_pos);
@@ -332,7 +356,7 @@ void QtWidgets::mousePressEvent(QMouseEvent* event)
 		QString x = QString::number(label_pos.x(), 10);
 		QString y = QString::number(label_pos.y(), 10);
 		QString point = x + " " + y;
-		if (ui.per_bt_choose->isChecked()) {
+		if (ui.perBtnChoose->isChecked()) {
 			if (count > 4) { count = 0; }//重置為0
 			count += 1;
 			update();
@@ -361,4 +385,19 @@ void QtWidgets::mousePressEvent(QMouseEvent* event)
 		}
 	}
 }
+
+void QtWidgets::consoleLog(QString operation, QString subname, QString filename, QString note) {
+	int rows = ui.consoleTable->rowCount();
+	ui.consoleTable->setRowCount(++rows);
+	QDateTime time = QDateTime::currentDateTime();//獲取系統時間
+	QString time_str = time.toString("MM-dd hh:mm:ss"); //時間顯示格式
+	ui.consoleTable->setItem(rows - 1, 0, new QTableWidgetItem(time_str));
+	ui.consoleTable->setItem(rows - 1, 1, new QTableWidgetItem(operation));
+	ui.consoleTable->setItem(rows - 1, 2, new QTableWidgetItem(subname));
+	ui.consoleTable->setItem(rows - 1, 3, new QTableWidgetItem(filename));
+	ui.consoleTable->setItem(rows - 1, 4, new QTableWidgetItem(note));
+
+	ui.consoleTable->scrollToBottom(); //滾動至底部
+}
+
 //透視轉換 點位調整 精簡化程式 github目錄調整 簡報優善

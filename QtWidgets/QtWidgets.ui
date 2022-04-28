@@ -6,32 +6,19 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>854</width>
-    <height>627</height>
+    <width>1546</width>
+    <height>821</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>QtWidgetsApplication1</string>
   </property>
   <widget class="QWidget" name="centralWidget">
-   <widget class="QPushButton" name="openFileBtn">
-    <property name="geometry">
-     <rect>
-      <x>660</x>
-      <y>10</y>
-      <width>90</width>
-      <height>30</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>開啟檔案</string>
-    </property>
-   </widget>
    <widget class="QGroupBox" name="groupBox_RGB">
     <property name="geometry">
      <rect>
-      <x>660</x>
-      <y>160</y>
+      <x>1360</x>
+      <y>120</y>
       <width>181</width>
       <height>111</height>
      </rect>
@@ -93,7 +80,7 @@
       <string>B</string>
      </property>
     </widget>
-    <widget class="QSlider" name="RGB_R">
+    <widget class="QSlider" name="RSlider">
      <property name="geometry">
       <rect>
        <x>30</x>
@@ -109,7 +96,7 @@
       <enum>Qt::Horizontal</enum>
      </property>
     </widget>
-    <widget class="QSlider" name="RGB_G">
+    <widget class="QSlider" name="GSlider">
      <property name="geometry">
       <rect>
        <x>30</x>
@@ -125,7 +112,7 @@
       <enum>Qt::Horizontal</enum>
      </property>
     </widget>
-    <widget class="QSlider" name="RGB_B">
+    <widget class="QSlider" name="BSlider">
      <property name="geometry">
       <rect>
        <x>30</x>
@@ -145,10 +132,10 @@
    <widget class="QLabel" name="label_Image">
     <property name="geometry">
      <rect>
-      <x>10</x>
-      <y>50</y>
-      <width>421</width>
-      <height>511</height>
+      <x>320</x>
+      <y>0</y>
+      <width>801</width>
+      <height>601</height>
      </rect>
     </property>
     <property name="text">
@@ -158,8 +145,8 @@
    <widget class="QGroupBox" name="groupBox_ROI">
     <property name="geometry">
      <rect>
-      <x>660</x>
-      <y>40</y>
+      <x>1360</x>
+      <y>0</y>
       <width>181</width>
       <height>121</height>
      </rect>
@@ -288,8 +275,8 @@
    <widget class="QGroupBox" name="groupBox">
     <property name="geometry">
      <rect>
-      <x>440</x>
-      <y>350</y>
+      <x>1140</x>
+      <y>310</y>
       <width>221</width>
       <height>71</height>
      </rect>
@@ -326,30 +313,11 @@
      </property>
     </widget>
    </widget>
-   <widget class="QLabel" name="label">
-    <property name="geometry">
-     <rect>
-      <x>10</x>
-      <y>0</y>
-      <width>281</width>
-      <height>51</height>
-     </rect>
-    </property>
-    <property name="font">
-     <font>
-      <family>Arial</family>
-      <pointsize>26</pointsize>
-     </font>
-    </property>
-    <property name="text">
-     <string>Original Image</string>
-    </property>
-   </widget>
    <widget class="QGroupBox" name="groupBox_2">
     <property name="geometry">
      <rect>
-      <x>440</x>
-      <y>270</y>
+      <x>1140</x>
+      <y>230</y>
       <width>111</width>
       <height>80</height>
      </rect>
@@ -387,8 +355,8 @@
    <widget class="QGroupBox" name="groupBox_3">
     <property name="geometry">
      <rect>
-      <x>550</x>
-      <y>270</y>
+      <x>1250</x>
+      <y>230</y>
       <width>111</width>
       <height>81</height>
      </rect>
@@ -396,7 +364,7 @@
     <property name="title">
      <string>色彩空間轉換</string>
     </property>
-    <widget class="QPushButton" name="grayButton">
+    <widget class="QPushButton" name="grayBtn">
      <property name="geometry">
       <rect>
        <x>10</x>
@@ -409,7 +377,7 @@
       <string>Gray</string>
      </property>
     </widget>
-    <widget class="QPushButton" name="hsvButton">
+    <widget class="QPushButton" name="hsvBtn">
      <property name="geometry">
       <rect>
        <x>10</x>
@@ -423,24 +391,11 @@
      </property>
     </widget>
    </widget>
-   <widget class="QPushButton" name="saveFileBtn">
-    <property name="geometry">
-     <rect>
-      <x>750</x>
-      <y>10</y>
-      <width>90</width>
-      <height>30</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>儲存圖片</string>
-    </property>
-   </widget>
    <widget class="QGroupBox" name="groupBox_4">
     <property name="geometry">
      <rect>
-      <x>440</x>
-      <y>160</y>
+      <x>1140</x>
+      <y>120</y>
       <width>221</width>
       <height>111</height>
      </rect>
@@ -448,7 +403,7 @@
     <property name="title">
      <string>透視變換</string>
     </property>
-    <widget class="QPushButton" name="per_bt">
+    <widget class="QPushButton" name="perBtn">
      <property name="geometry">
       <rect>
        <x>120</x>
@@ -573,7 +528,7 @@
       <string>RighTop</string>
      </property>
     </widget>
-    <widget class="QCheckBox" name="per_bt_choose">
+    <widget class="QCheckBox" name="perBtnChoose">
      <property name="geometry">
       <rect>
        <x>30</x>
@@ -590,8 +545,8 @@
    <widget class="QGroupBox" name="groupBox_5">
     <property name="geometry">
      <rect>
-      <x>440</x>
-      <y>40</y>
+      <x>1140</x>
+      <y>0</y>
       <width>221</width>
       <height>121</height>
      </rect>
@@ -711,23 +666,46 @@
      </property>
     </widget>
    </widget>
-   <widget class="QLabel" name="image_message">
+   <widget class="QTableWidget" name="consoleTable">
     <property name="geometry">
      <rect>
-      <x>450</x>
-      <y>559</y>
-      <width>401</width>
-      <height>31</height>
+      <x>0</x>
+      <y>600</y>
+      <width>1121</width>
+      <height>171</height>
      </rect>
     </property>
-    <property name="font">
-     <font>
-      <pointsize>10</pointsize>
-     </font>
+    <property name="showGrid">
+     <bool>false</bool>
     </property>
-    <property name="text">
-     <string/>
-    </property>
+    <attribute name="horizontalHeaderDefaultSectionSize">
+     <number>210</number>
+    </attribute>
+    <column>
+     <property name="text">
+      <string>Time</string>
+     </property>
+    </column>
+    <column>
+     <property name="text">
+      <string>Operation</string>
+     </property>
+    </column>
+    <column>
+     <property name="text">
+      <string>Operation Object</string>
+     </property>
+    </column>
+    <column>
+     <property name="text">
+      <string>Details</string>
+     </property>
+    </column>
+    <column>
+     <property name="text">
+      <string>Note</string>
+     </property>
+    </column>
    </widget>
   </widget>
   <widget class="QMenuBar" name="menuBar">
@@ -735,10 +713,18 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>854</width>
+     <width>1546</width>
      <height>21</height>
     </rect>
    </property>
+   <widget class="QMenu" name="menu">
+    <property name="title">
+     <string>檔案</string>
+    </property>
+    <addaction name="openBtn"/>
+    <addaction name="saveBtn"/>
+   </widget>
+   <addaction name="menu"/>
   </widget>
   <widget class="QToolBar" name="mainToolBar">
    <attribute name="toolBarArea">
@@ -749,253 +735,22 @@
    </attribute>
   </widget>
   <widget class="QStatusBar" name="statusBar"/>
+  <action name="openBtn">
+   <property name="text">
+    <string>開啟檔案</string>
+   </property>
+  </action>
+  <action name="saveBtn">
+   <property name="text">
+    <string>儲存檔案</string>
+   </property>
+  </action>
  </widget>
  <layoutdefault spacing="6" margin="11"/>
  <resources>
   <include location="QtWidgets.qrc"/>
  </resources>
- <connections>
-  <connection>
-   <sender>openFileBtn</sender>
-   <signal>clicked()</signal>
-   <receiver>QtWidgetsClass</receiver>
-   <slot>openFile()</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>786</x>
-     <y>56</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>426</x>
-     <y>313</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>roiBtn</sender>
-   <signal>clicked()</signal>
-   <receiver>QtWidgetsClass</receiver>
-   <slot>ROI()</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>750</x>
-     <y>166</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>426</x>
-     <y>313</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>histogramBtn</sender>
-   <signal>clicked()</signal>
-   <receiver>QtWidgetsClass</receiver>
-   <slot>histogram()</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>466</x>
-     <y>456</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>426</x>
-     <y>313</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>thresholdSlider</sender>
-   <signal>valueChanged(int)</signal>
-   <receiver>QtWidgetsClass</receiver>
-   <slot>Qthreshold()</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>530</x>
-     <y>563</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>426</x>
-     <y>313</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>hsvButton</sender>
-   <signal>clicked()</signal>
-   <receiver>QtWidgetsClass</receiver>
-   <slot>change2HSV()</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>576</x>
-     <y>486</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>426</x>
-     <y>313</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>grayButton</sender>
-   <signal>clicked()</signal>
-   <receiver>QtWidgetsClass</receiver>
-   <slot>change2Gray()</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>576</x>
-     <y>456</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>426</x>
-     <y>313</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>equalHistBtn</sender>
-   <signal>clicked()</signal>
-   <receiver>QtWidgetsClass</receiver>
-   <slot>QequalizeHist()</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>466</x>
-     <y>486</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>426</x>
-     <y>313</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>saveFileBtn</sender>
-   <signal>clicked()</signal>
-   <receiver>QtWidgetsClass</receiver>
-   <slot>savefile()</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>704</x>
-     <y>57</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>426</x>
-     <y>313</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>rotate_x</sender>
-   <signal>valueChanged(int)</signal>
-   <receiver>QtWidgetsClass</receiver>
-   <slot>rotate()</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>529</x>
-     <y>193</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>426</x>
-     <y>313</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>rotate_y</sender>
-   <signal>valueChanged(int)</signal>
-   <receiver>QtWidgetsClass</receiver>
-   <slot>rotate()</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>529</x>
-     <y>223</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>426</x>
-     <y>313</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>rotate_z</sender>
-   <signal>valueChanged(int)</signal>
-   <receiver>QtWidgetsClass</receiver>
-   <slot>rotate()</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>529</x>
-     <y>253</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>426</x>
-     <y>313</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>RGB_B</sender>
-   <signal>valueChanged(int)</signal>
-   <receiver>QtWidgetsClass</receiver>
-   <slot>QRGB()</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>760</x>
-     <y>283</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>426</x>
-     <y>313</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>RGB_G</sender>
-   <signal>valueChanged(int)</signal>
-   <receiver>QtWidgetsClass</receiver>
-   <slot>QRGB()</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>760</x>
-     <y>253</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>426</x>
-     <y>313</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>RGB_R</sender>
-   <signal>valueChanged(int)</signal>
-   <receiver>QtWidgetsClass</receiver>
-   <slot>QRGB()</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>760</x>
-     <y>223</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>426</x>
-     <y>313</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>per_bt</sender>
-   <signal>clicked()</signal>
-   <receiver>QtWidgetsClass</receiver>
-   <slot>perspective()</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>606</x>
-     <y>206</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>426</x>
-     <y>313</y>
-    </hint>
-   </hints>
-  </connection>
- </connections>
+ <connections/>
  <slots>
   <slot>openFile()</slot>
   <slot>ROI()</slot>

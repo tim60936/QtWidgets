@@ -44,7 +44,7 @@ private:
 // slots 函數宣告
 private slots:
     void openFile();
-    void savefile();
+    void saveFile();
     void ROI();
     void Qthreshold();
     void histogram();
@@ -55,4 +55,5 @@ private slots:
     void QRGB();
     void perspective();
     void mousePressEvent(QMouseEvent* event);
+    void consoleLog(QString operation, QString subname, QString filename, QString note);
 };
