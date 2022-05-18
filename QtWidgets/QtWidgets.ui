@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1546</width>
-    <height>821</height>
+    <width>1121</width>
+    <height>825</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -17,9 +17,9 @@
    <widget class="QGroupBox" name="groupBox_RGB">
     <property name="geometry">
      <rect>
-      <x>1360</x>
+      <x>900</x>
       <y>120</y>
-      <width>181</width>
+      <width>221</width>
       <height>111</height>
      </rect>
     </property>
@@ -85,7 +85,7 @@
       <rect>
        <x>30</x>
        <y>20</y>
-       <width>141</width>
+       <width>171</width>
        <height>22</height>
       </rect>
      </property>
@@ -101,7 +101,7 @@
       <rect>
        <x>30</x>
        <y>50</y>
-       <width>141</width>
+       <width>171</width>
        <height>22</height>
       </rect>
      </property>
@@ -117,7 +117,7 @@
       <rect>
        <x>30</x>
        <y>80</y>
-       <width>141</width>
+       <width>171</width>
        <height>22</height>
       </rect>
      </property>
@@ -132,9 +132,9 @@
    <widget class="QLabel" name="label_Image">
     <property name="geometry">
      <rect>
-      <x>320</x>
+      <x>0</x>
       <y>0</y>
-      <width>801</width>
+      <width>881</width>
       <height>601</height>
      </rect>
     </property>
@@ -145,51 +145,31 @@
    <widget class="QGroupBox" name="groupBox_ROI">
     <property name="geometry">
      <rect>
-      <x>1360</x>
-      <y>0</y>
-      <width>181</width>
-      <height>121</height>
+      <x>900</x>
+      <y>420</y>
+      <width>221</width>
+      <height>141</height>
      </rect>
     </property>
     <property name="title">
      <string>ROI</string>
     </property>
-    <widget class="QLineEdit" name="lineEdit_X1">
+    <widget class="QLineEdit" name="lineEdit_X">
      <property name="geometry">
       <rect>
-       <x>50</x>
-       <y>20</y>
-       <width>41</width>
+       <x>110</x>
+       <y>60</y>
+       <width>71</width>
        <height>22</height>
       </rect>
      </property>
     </widget>
-    <widget class="QLineEdit" name="lineEdit_X2">
+    <widget class="QLineEdit" name="lineEdit_Y">
      <property name="geometry">
       <rect>
-       <x>130</x>
-       <y>20</y>
-       <width>41</width>
-       <height>22</height>
-      </rect>
-     </property>
-    </widget>
-    <widget class="QLineEdit" name="lineEdit_Y1">
-     <property name="geometry">
-      <rect>
-       <x>50</x>
-       <y>50</y>
-       <width>41</width>
-       <height>22</height>
-      </rect>
-     </property>
-    </widget>
-    <widget class="QLineEdit" name="lineEdit_Y2">
-     <property name="geometry">
-      <rect>
-       <x>130</x>
-       <y>50</y>
-       <width>41</width>
+       <x>110</x>
+       <y>90</y>
+       <width>71</width>
        <height>22</height>
       </rect>
      </property>
@@ -198,72 +178,44 @@
      <property name="geometry">
       <rect>
        <x>20</x>
-       <y>20</y>
-       <width>21</width>
+       <y>60</y>
+       <width>81</width>
        <height>16</height>
       </rect>
      </property>
+     <property name="font">
+      <font>
+       <pointsize>14</pointsize>
+      </font>
+     </property>
      <property name="text">
-      <string>X :</string>
+      <string>左上座標:</string>
      </property>
     </widget>
     <widget class="QLabel" name="label_Y">
      <property name="geometry">
       <rect>
        <x>20</x>
-       <y>50</y>
-       <width>21</width>
-       <height>16</height>
-      </rect>
-     </property>
-     <property name="text">
-      <string>Y :</string>
-     </property>
-    </widget>
-    <widget class="QLabel" name="label_Xtilde">
-     <property name="geometry">
-      <rect>
-       <x>100</x>
-       <y>20</y>
-       <width>21</width>
+       <y>90</y>
+       <width>81</width>
        <height>16</height>
       </rect>
      </property>
      <property name="font">
       <font>
-       <family>Arial</family>
        <pointsize>14</pointsize>
       </font>
      </property>
      <property name="text">
-      <string>~</string>
-     </property>
-    </widget>
-    <widget class="QLabel" name="label_Ytilde">
-     <property name="geometry">
-      <rect>
-       <x>100</x>
-       <y>50</y>
-       <width>21</width>
-       <height>16</height>
-      </rect>
-     </property>
-     <property name="font">
-      <font>
-       <family>Arial</family>
-       <pointsize>14</pointsize>
-      </font>
-     </property>
-     <property name="text">
-      <string>~</string>
+      <string>右下座標:</string>
      </property>
     </widget>
     <widget class="QPushButton" name="roiBtn">
      <property name="geometry">
       <rect>
-       <x>10</x>
-       <y>80</y>
-       <width>161</width>
+       <x>120</x>
+       <y>10</y>
+       <width>93</width>
        <height>28</height>
       </rect>
      </property>
@@ -271,12 +223,25 @@
       <string>ROI</string>
      </property>
     </widget>
+    <widget class="QCheckBox" name="ROIBtnChoose">
+     <property name="geometry">
+      <rect>
+       <x>30</x>
+       <y>10</y>
+       <width>71</width>
+       <height>28</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>選擇角點</string>
+     </property>
+    </widget>
    </widget>
    <widget class="QGroupBox" name="groupBox">
     <property name="geometry">
      <rect>
-      <x>1140</x>
-      <y>310</y>
+      <x>900</x>
+      <y>230</y>
       <width>221</width>
       <height>71</height>
      </rect>
@@ -289,7 +254,7 @@
       <rect>
        <x>10</x>
        <y>30</y>
-       <width>181</width>
+       <width>191</width>
        <height>22</height>
       </rect>
      </property>
@@ -313,89 +278,11 @@
      </property>
     </widget>
    </widget>
-   <widget class="QGroupBox" name="groupBox_2">
-    <property name="geometry">
-     <rect>
-      <x>1140</x>
-      <y>230</y>
-      <width>111</width>
-      <height>80</height>
-     </rect>
-    </property>
-    <property name="title">
-     <string>直方圖</string>
-    </property>
-    <widget class="QPushButton" name="histogramBtn">
-     <property name="geometry">
-      <rect>
-       <x>10</x>
-       <y>20</y>
-       <width>93</width>
-       <height>28</height>
-      </rect>
-     </property>
-     <property name="text">
-      <string>顯示直方圖</string>
-     </property>
-    </widget>
-    <widget class="QPushButton" name="equalHistBtn">
-     <property name="geometry">
-      <rect>
-       <x>10</x>
-       <y>50</y>
-       <width>93</width>
-       <height>28</height>
-      </rect>
-     </property>
-     <property name="text">
-      <string>直方圖等化</string>
-     </property>
-    </widget>
-   </widget>
-   <widget class="QGroupBox" name="groupBox_3">
-    <property name="geometry">
-     <rect>
-      <x>1250</x>
-      <y>230</y>
-      <width>111</width>
-      <height>81</height>
-     </rect>
-    </property>
-    <property name="title">
-     <string>色彩空間轉換</string>
-    </property>
-    <widget class="QPushButton" name="grayBtn">
-     <property name="geometry">
-      <rect>
-       <x>10</x>
-       <y>20</y>
-       <width>93</width>
-       <height>28</height>
-      </rect>
-     </property>
-     <property name="text">
-      <string>Gray</string>
-     </property>
-    </widget>
-    <widget class="QPushButton" name="hsvBtn">
-     <property name="geometry">
-      <rect>
-       <x>10</x>
-       <y>50</y>
-       <width>93</width>
-       <height>28</height>
-      </rect>
-     </property>
-     <property name="text">
-      <string>HSV</string>
-     </property>
-    </widget>
-   </widget>
    <widget class="QGroupBox" name="groupBox_4">
     <property name="geometry">
      <rect>
-      <x>1140</x>
-      <y>120</y>
+      <x>900</x>
+      <y>310</y>
       <width>221</width>
       <height>111</height>
      </rect>
@@ -426,31 +313,11 @@
       </rect>
      </property>
     </widget>
-    <widget class="QLineEdit" name="lineEdit_LB">
-     <property name="geometry">
-      <rect>
-       <x>50</x>
-       <y>70</y>
-       <width>51</width>
-       <height>22</height>
-      </rect>
-     </property>
-    </widget>
     <widget class="QLineEdit" name="lineEdit_RT">
      <property name="geometry">
       <rect>
        <x>160</x>
        <y>40</y>
-       <width>51</width>
-       <height>22</height>
-      </rect>
-     </property>
-    </widget>
-    <widget class="QLineEdit" name="lineEdit_RB">
-     <property name="geometry">
-      <rect>
-       <x>160</x>
-       <y>70</y>
        <width>51</width>
        <height>22</height>
       </rect>
@@ -541,11 +408,31 @@
       <string>選擇角點</string>
      </property>
     </widget>
+    <widget class="QLineEdit" name="lineEdit_RB">
+     <property name="geometry">
+      <rect>
+       <x>160</x>
+       <y>70</y>
+       <width>51</width>
+       <height>22</height>
+      </rect>
+     </property>
+    </widget>
+    <widget class="QLineEdit" name="lineEdit_LB">
+     <property name="geometry">
+      <rect>
+       <x>50</x>
+       <y>70</y>
+       <width>51</width>
+       <height>22</height>
+      </rect>
+     </property>
+    </widget>
    </widget>
    <widget class="QGroupBox" name="groupBox_5">
     <property name="geometry">
      <rect>
-      <x>1140</x>
+      <x>900</x>
       <y>0</y>
       <width>221</width>
       <height>121</height>
@@ -713,7 +600,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>1546</width>
+     <width>1121</width>
      <height>21</height>
     </rect>
    </property>
@@ -724,7 +611,23 @@
     <addaction name="openBtn"/>
     <addaction name="saveBtn"/>
    </widget>
+   <widget class="QMenu" name="menu_2">
+    <property name="title">
+     <string>直方圖</string>
+    </property>
+    <addaction name="histogramBtn"/>
+    <addaction name="equalHistBtn"/>
+   </widget>
+   <widget class="QMenu" name="menu_3">
+    <property name="title">
+     <string>色彩空間轉換</string>
+    </property>
+    <addaction name="grayBtn"/>
+    <addaction name="hsvBtn"/>
+   </widget>
    <addaction name="menu"/>
+   <addaction name="menu_2"/>
+   <addaction name="menu_3"/>
   </widget>
   <widget class="QToolBar" name="mainToolBar">
    <attribute name="toolBarArea">
@@ -743,6 +646,26 @@
   <action name="saveBtn">
    <property name="text">
     <string>儲存檔案</string>
+   </property>
+  </action>
+  <action name="histogramBtn">
+   <property name="text">
+    <string>顯示直方圖</string>
+   </property>
+  </action>
+  <action name="equalHistBtn">
+   <property name="text">
+    <string>直方圖等化</string>
+   </property>
+  </action>
+  <action name="grayBtn">
+   <property name="text">
+    <string>Gray</string>
+   </property>
+  </action>
+  <action name="hsvBtn">
+   <property name="text">
+    <string>HSV</string>
    </property>
   </action>
  </widget>

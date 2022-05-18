@@ -14,7 +14,7 @@
 #include <math.h>
 #include <QPainter>
 using namespace cv;
-//1.3
+//1.4
 QtWidgets::QtWidgets(QWidget *parent)
     : QMainWindow(parent)
 {
@@ -24,25 +24,26 @@ QtWidgets::QtWidgets(QWidget *parent)
 	QObject::connect(ui.openBtn, &QAction::triggered, this, &QtWidgets::openFile);
 	QObject::connect(ui.saveBtn, &QAction::triggered, this, &QtWidgets::saveFile);
 
-	//Btn
-	connect(ui.roiBtn, SIGNAL(clicked()), this, SLOT(ROI()));
-	connect(ui.perBtn, SIGNAL(clicked()), this, SLOT(perspective()));
-	connect(ui.hsvBtn, SIGNAL(clicked()), this, SLOT(change2HSV()));
-	connect(ui.histogramBtn, SIGNAL(clicked()), this, SLOT(histogram()));
-	connect(ui.grayBtn, SIGNAL(clicked()), this, SLOT(change2Gray()));
-	connect(ui.equalHistBtn, SIGNAL(clicked()), this, SLOT(QequalizeHist()));
+	QObject::connect(ui.histogramBtn, &QAction::triggered, this, &QtWidgets::histogram);
+	QObject::connect(ui.equalHistBtn, &QAction::triggered, this, &QtWidgets::qequalizeHist);
 
+	QObject::connect(ui.hsvBtn, &QAction::triggered, this, &QtWidgets::change2HSV);
+	QObject::connect(ui.grayBtn, &QAction::triggered, this, &QtWidgets::change2Gray);
+	//Btn
+	connect(ui.perBtnChoose,SIGNAL(clicked()),this,SLOT(perBtncheek()));
+	connect(ui.perBtn, SIGNAL(clicked()), this, SLOT(perspective()));
+	connect(ui.ROIBtnChoose, SIGNAL(clicked()), this, SLOT(ROIBtncheek()));
+	connect(ui.roiBtn, SIGNAL(clicked()), this, SLOT(ROI()));
 	//QSlider
-	connect(ui.thresholdSlider, SIGNAL(valueChange(int)), this, SLOT(Qthreshold()));
-	connect(ui.rotate_x, SIGNAL(valueChange(int)), this, SLOT(rotate()));
-	connect(ui.rotate_y, SIGNAL(valueChange(int)), this, SLOT(rotate()));
-	connect(ui.rotate_z, SIGNAL(valueChange(int)), this, SLOT(rotate()));
-	connect(ui.RSlider, SIGNAL(valueChange(int)), this, SLOT(QRGB()));
-	connect(ui.GSlider, SIGNAL(valueChange(int)), this, SLOT(QRGB()));
-	connect(ui.BSlider, SIGNAL(valueChange(int)), this, SLOT(QRGB()));
+	connect(ui.thresholdSlider, SIGNAL(valueChanged(int)), this, SLOT(qthreshold()));
+	connect(ui.rotate_x, SIGNAL(valueChanged(int)), this, SLOT(rotate()));
+	connect(ui.rotate_y, SIGNAL(valueChanged(int)), this, SLOT(rotate()));
+	connect(ui.rotate_z, SIGNAL(valueChanged(int)), this, SLOT(rotate()));
+	connect(ui.RSlider, SIGNAL(valueChanged(int)), this, SLOT(qRGB()));
+	connect(ui.GSlider, SIGNAL(valueChanged(int)), this, SLOT(qRGB()));
+	connect(ui.BSlider, SIGNAL(valueChanged(int)), this, SLOT(qRGB()));
 }
 
-//開啟圖片
 void QtWidgets::openFile()
 {
 	ui.label_Image->clear();
@@ -64,7 +65,6 @@ void QtWidgets::openFile()
 		QString imgh = QString("(%1)").arg(imgsize.height());
 		QString imgw = QString("(%1)").arg(imgsize.width());
 		consoleLog("OpenFile", file_name, fileName,"寬"+imgw+"高"+imgh);
-
 		waitKey();
 		if (img.isNull())
 		{
@@ -73,12 +73,11 @@ void QtWidgets::openFile()
 	}
 }
 
-//儲存圖片
 void QtWidgets::saveFile()
 {
 	if (ui.label_Image->pixmap() != nullptr) {
 		QString filename = QFileDialog::getSaveFileName(this,
-			tr("save image file"),"./",tr("*.png;; *.jpg;; *.bmp;; *.tif;; *.GIF")); //路徑選擇
+			tr("save image file"),"./",tr("*.png;; *.jpg;; *.bmp;; *.tif;; *.GIF"));
 		if (filename.isEmpty())
 		{
 			consoleLog("SaveFile", "警告", "", "儲存失敗");
@@ -93,53 +92,7 @@ void QtWidgets::saveFile()
 	else { consoleLog("SaveFile", "警告", "", "儲存失敗"); }
 }
 
-//ROI
-void QtWidgets::ROI()
-{
-	int x1, x2, y1, y2;
-	QString X1 = ui.lineEdit_X1->text();
-	QString X2 = ui.lineEdit_X2->text();
-	QString Y1 = ui.lineEdit_Y1->text();
-	QString Y2 = ui.lineEdit_Y2->text();
-	//錯誤格式
-	if (X1 == NULL || X2 == NULL || Y1 == NULL || Y2 == NULL) {
-		QMessageBox::warning(NULL, "Error!", "Wrong Value");
-	}
-	else {
-		x1 = X1.toInt();
-		x2 = X2.toInt();
-		y1 = Y1.toInt();
-		y2 = Y2.toInt();
-		if (x1 > x2 || y1 > y2) {
-			QMessageBox::warning(NULL, "Error!", "Wrong Value");//錯誤格式
-		}
-		else {
-			QImage image;
-			const QPixmap* pixmap = ui.label_Image->pixmap();
-			if (pixmap)
-			{
-				QImage image1(pixmap->toImage());
-				image = image1;
-			}
-			//超過數值
-			if (x2 > image.height()) {
-				QMessageBox::warning(NULL, "out of height!", "Wrong x2 value!");
-			}
-			else if (y2 > image.width()) {
-				QMessageBox::warning(NULL, "out of width!", "Wrong y2 value!");
-			}
-			else {
-				Mat mat = QImage2cvMat(image);
-				Mat imageROI = mat(Range(x1, x2), Range(y1, y2));
-				imshow("ROI", imageROI);
-				waitKey(0);
-				destroyAllWindows();
-			}
-		}
-	}
-}
-
-//繪製直方圖
+//直方圖
 void QtWidgets::histogram() {
 	Mat Ori_image = QImage2cvMat(ui.label_Image->pixmap()->toImage());
 	Mat Gray_image;
@@ -168,43 +121,14 @@ void QtWidgets::histogram() {
 		int realValue = saturate_cast<int>(binValue * hpt / maxValue);
 		line(dstImage, Point(i, size - 1), Point(i, size - realValue), Scalar(255));
 	}
+	consoleLog("Histogram", "", "NULL", "");
 	imshow("result", dstImage);
 	waitKey(0);
 }
 
-//灰階
-void QtWidgets::change2Gray() {
-	Mat Ori_image = QImage2cvMat(ui.label_Image->pixmap()->toImage());
-	Mat Gray_image;
-	cvtColor(Ori_image, Gray_image, COLOR_BGR2GRAY);
-	imshow("Gray image", Gray_image);
-	waitKey(0);
-	destroyAllWindows();
-}
-
-//轉為HSV
-void QtWidgets::change2HSV() {
-	Mat Ori_image = QImage2cvMat(ui.label_Image->pixmap()->toImage());
-	Mat Gray_image;
-	cvtColor(Ori_image, Gray_image, COLOR_BGR2HSV);
-	imshow("HSV image", Gray_image);
-	waitKey(0);
-	destroyAllWindows();
-}
-
-//二值化
-void QtWidgets::Qthreshold() {
-	Mat Ori_image = QImage2cvMat(ui.label_Image->pixmap()->toImage());
-	Mat Gray_image;
-	int tvalue = ui.thresholdSlider->value();
-	cvtColor(Ori_image, Gray_image, COLOR_BGR2GRAY);
-	Mat result;
-	threshold(Gray_image, result, tvalue, 255, THRESH_BINARY);
-	imshow("result", result);
-}
 
 //直方圖等化
-void QtWidgets::QequalizeHist() {
+void QtWidgets::qequalizeHist() {
 	Mat Ori_image = QImage2cvMat(ui.label_Image->pixmap()->toImage());
 	Mat Gray_image, result;
 	cvtColor(Ori_image, Gray_image, COLOR_BGR2GRAY);
@@ -216,25 +140,21 @@ void QtWidgets::QequalizeHist() {
 	const float* ranges[] = { hranges };
 	int size = 256;
 	int channels = 0;
-
 	//­計算影像的直方
 	calcHist(&result, 1, &channels, Mat(), dstHist, dims, &size, ranges);
-
 	Mat dstHistImage(size, size, CV_8U, Scalar(0));
-	//獲得最小值最大值
 	double minValue = 0;
 	double dstMaxValue = 0;
-	minMaxLoc(dstHist, &minValue, &dstMaxValue, 0, 0);//在cv中用的是cvGetMinMaxHistValue
+	minMaxLoc(dstHist, &minValue, &dstMaxValue, 0, 0);
 	//繪製直方圖
-	//saturate_cast函數的作用即是：當運算完之後，最小值0最大值為255。
 	int hpt = saturate_cast<int>(0.9 * size);
 	for (int i = 0; i < 256; i++)
 	{
-		float binValue = dstHist.at<float>(i);//hist類別為float 
-		//拉伸到0-max
+		float binValue = dstHist.at<float>(i);
 		int realValue = saturate_cast<int>(binValue * hpt / dstMaxValue);
 		line(dstHistImage, Point(i, size - 1), Point(i, size - realValue), Scalar(255));
 	}
+	consoleLog("Histogram Equalization", "", "NULL", "");
 	imshow("Original image", Gray_image);
 	imshow("result", result);
 	imshow("dstHistImage", dstHistImage);
@@ -242,17 +162,52 @@ void QtWidgets::QequalizeHist() {
 	destroyAllWindows();
 }
 
-//翻轉圖片
+//灰階
+void QtWidgets::change2Gray() {
+	Mat Ori_image = QImage2cvMat(ui.label_Image->pixmap()->toImage());
+	Mat Gray_image;
+	cvtColor(Ori_image, Gray_image, COLOR_BGR2GRAY);
+	consoleLog("Gray", "", "NULL", "");
+	imshow("Gray image", Gray_image);
+	waitKey(0);
+	destroyAllWindows();
+}
+
+//HSV
+void QtWidgets::change2HSV() {
+	Mat Ori_image = QImage2cvMat(ui.label_Image->pixmap()->toImage());
+	Mat Gray_image;
+	cvtColor(Ori_image, Gray_image, COLOR_BGR2HSV);
+	consoleLog("HSV", "", "NULL", "");
+	imshow("HSV image", Gray_image);
+	waitKey(0);
+	destroyAllWindows();
+}
+
+//二值化
+void QtWidgets::qthreshold() {
+	Mat Ori_image = QImage2cvMat(ui.label_Image->pixmap()->toImage());
+	Mat Gray_image;
+	int tvalue = ui.thresholdSlider->value();
+	QString valuetext = QString("(%1)").arg(ui.thresholdSlider->value());
+	cvtColor(Ori_image, Gray_image, COLOR_BGR2GRAY);
+	Mat result;
+	threshold(Gray_image, result, tvalue, 255, THRESH_BINARY);
+	consoleLog("Binarization", "", "Slider value:"+valuetext, "");
+	imshow("result", result);
+}
+
+
+//翻轉
 void QtWidgets::rotate(){
 	Mat Ori_image = QImage2cvMat(ui.label_Image->pixmap()->toImage());
-	//轉換圖
 	copyMakeBorder(Ori_image, Ori_image, 0, 0, 0, 0, BORDER_CONSTANT, 0);
 	//高寬xyz
 	int h = Ori_image.cols;
 	int w = Ori_image.rows;
 	double angley = ui.rotate_y->value();//上下幅度
-	double anglex = ui.rotate_x->value();;//左右
-	double anglez = ui.rotate_z->value();;//旋轉角度
+	double anglex = ui.rotate_x->value();//左右
+	double anglez = ui.rotate_z->value();//旋轉角度
 	double fov = 50;
 	//可視範圍
 	double z = sqrt(w * w + h * h) / 2.0 / tan((fov / 2.0) * CV_PI / 180.0);
@@ -290,12 +245,16 @@ void QtWidgets::rotate(){
 	}
 	Mat result;
 	Mat warpMatrix = getPerspectiveTransform(org, dst);
+	QString Xvalue = QString("(%1)").arg(ui.rotate_x->value());
+	QString Yvalue = QString("(%1)").arg(ui.rotate_y->value());
+	QString Zvalue = QString("(%1)").arg(ui.rotate_z->value());
+	consoleLog("RGB slider", "", "X : " +Xvalue+" Y : "+Yvalue+" Z : "+Zvalue, "");
 	warpPerspective(Ori_image, result, warpMatrix, Size(h, w));
 	namedWindow("result", 0);
 	imshow("result", result);
  }
 
-void QtWidgets::QRGB() {
+void QtWidgets::qRGB() {
 	Mat Ori_image = QImage2cvMat(ui.label_Image->pixmap()->toImage());
 	Mat rgb_image;
 	cvtColor(Ori_image, rgb_image, COLOR_RGB2BGR);
@@ -303,6 +262,10 @@ void QtWidgets::QRGB() {
 	int rgb_r = ui.RSlider->value();
 	int rgb_g = ui.GSlider->value();
 	int rgb_b = ui.BSlider ->value();
+	QString Rvalue = QString("(%1)").arg(ui.RSlider->value());
+	QString Gvalue = QString("(%1)").arg(ui.GSlider->value());
+	QString Bvalue = QString("(%1)").arg(ui.BSlider->value());
+	consoleLog("RGB slider", "", "R : "+Rvalue+" G : "+Gvalue+" B : "+Bvalue, "");
 	for (int i = 0; i < Ori_image.rows; i++)
 	{
 		for (int j = 0; j < Ori_image.cols; j++)
@@ -316,74 +279,175 @@ void QtWidgets::QRGB() {
 }
 
 void QtWidgets::perspective(){
+	if(ui.lineEdit_LB->text()==NULL || ui.lineEdit_LT->text()==NULL || 
+		ui.lineEdit_RB->text()==NULL || ui.lineEdit_RT->text()==NULL){ 
+		consoleLog("perspective transformation", "", "警告!", "請選擇轉換點位");
+		QMessageBox::warning(NULL, "Error!", "Wrong vaule!");
+		return;
+	}
 	Mat Ori_image = QImage2cvMat(ui.label_Image->pixmap()->toImage());
 	Mat src = Ori_image.clone();
 	Mat warpPerspective_mat(3, 3, CV_32FC1), warpPerspective_dst;
 	Point2f srcTri[4], dstTri[4];
 	warpPerspective_dst = Mat::zeros(src.rows, src.cols, src.type());
-
 	//原圖
 	srcTri[0] = Point2f(point_lt);
 	srcTri[1] = Point2f(point_rt);
-	srcTri[2] = Point2f(point_rb);
-	srcTri[3] = Point2f(point_lb);
+	srcTri[2] = Point2f(point_lb);
+	srcTri[3] = Point2f(point_rb);
 	//目標圖座標
-	dstTri[0] = Point2f(0, 0);//左上
-	dstTri[1] = Point2f(src.cols, 0);//右上
-	dstTri[2] = Point2f(0, src.rows);//右下
-	dstTri[3] = Point2f(src.cols , src.rows);//左下
-
+	dstTri[0] = Point2f(0, 0);
+	dstTri[1] = Point2f(src.cols, 0);
+	dstTri[2] = Point2f(0, src.rows);
+	dstTri[3] = Point2f(src.cols , src.rows);
 	//座標紀錄
 	warpPerspective_mat = getPerspectiveTransform(srcTri, dstTri);
 	//透視變換
+	consoleLog("perspective transformation","", "NULL", "不符合可重新點選");
 	warpPerspective(src, warpPerspective_dst, warpPerspective_mat, src.size());
 	namedWindow(" result", WINDOW_AUTOSIZE);
 	imshow(" result", warpPerspective_dst);
 }
 
+void QtWidgets::perBtncheek()
+{
+	if (ui.perBtnChoose->isChecked() == true)
+	{
+		consoleLog("perspective transformation", "", "提示!", "請由左上順時鐘至左下");
+	}
+}
+
+void QtWidgets::ROI()
+{
+	int x1, x2, y1, y2;
+	QString X1 = point_x1;
+	QString X2 = point_x2;
+	QString Y1 = point_y1;
+	QString Y2 = point_y2;
+	if (X1 == NULL || X2 == NULL || Y1 == NULL || Y2 == NULL) {
+		consoleLog("ROI", "", "警告!", "請選擇轉換點位");
+		QMessageBox::warning(NULL, "Error!", "Wrong Value");
+		return;
+	}
+	else {
+		x1 = X1.toInt();
+		x2 = X2.toInt();
+		y1 = Y1.toInt();
+		y2 = Y2.toInt();
+		if (x1 > x2 || y1 > y2) {
+			consoleLog("ROI", "", "警告!", "點位錯誤!");
+			QMessageBox::warning(NULL, "Error!", "Wrong Value");
+		}
+		else {
+			QImage image;
+			const QPixmap* pixmap = ui.label_Image->pixmap();
+			if (pixmap)
+			{
+				QImage image1(pixmap->toImage());
+				image = image1;
+			}
+			//超過數值
+			if (x2 > image.height()) {
+				consoleLog("ROI", "", "警告!", "數值錯誤!");
+				QMessageBox::warning(NULL, "out of height!", "Wrong x2 value!");
+			}
+			else if (y2 > image.width()) {
+				consoleLog("ROI", "", "警告!", "數值錯誤!");
+				QMessageBox::warning(NULL, "out of width!", "Wrong y2 value!");
+			}
+			else {
+				Mat mat = QImage2cvMat(image);
+				Mat imageROI = mat(Range(x1, x2), Range(y1, y2));
+				consoleLog("ROI", "",X1+" ," + X2 + "  " + Y1+" ," + Y2, "");
+				imshow("ROI", imageROI);
+				waitKey(0);
+				destroyAllWindows();
+			}
+		}
+	}
+}
+
+void QtWidgets::ROIBtncheek()
+{
+	if (ui.ROIBtnChoose->isChecked() == true)
+	{
+		consoleLog("ROI", "", "提示!", "請選擇左上及右下");
+	}
+}
 
 void QtWidgets::mousePressEvent(QMouseEvent* event)
 {
 	// 如果有勾選、按下滑鼠左鍵、左上順時鐘挑選
-	if (event->button() == Qt::LeftButton && ui.perBtnChoose->isChecked() == true) {
-		QPoint global_pos = event->globalPos();
-		//QPoint label_pos = label->mapFromGlobal(global_pos);
-		QPoint label_pos = ui.label_Image->mapFromGlobal(global_pos);
-		
-		int point_x = label_pos.x();
-		int point_y = label_pos.y();
-	    //point_lt, point_rt, point_rb, point_lb;
-		QString x = QString::number(label_pos.x(), 10);
-		QString y = QString::number(label_pos.y(), 10);
-		QString point = x + " " + y;
-		if (ui.perBtnChoose->isChecked()) {
-			if (count > 4) { count = 0; }//重置為0
-			count += 1;
-			update();
-			switch (count) {
-			case 1:
-				ui.lineEdit_LT->setText(point);
-				point_lt.x = label_pos.x();
-				point_lt.y = label_pos.y();
-				break;
-			case 2:
-				ui.lineEdit_RT->setText(point);
-				point_rt.x = label_pos.x();
-				point_rt.y = label_pos.y();
-				break;
-			case 3:
-				ui.lineEdit_LB->setText(point);
-				point_lb.x = label_pos.x();
-				point_lb.y = label_pos.y();
-				break;
-			case 4:
-				ui.lineEdit_RB->setText(point);
-				point_rb.x = label_pos.x();
-				point_rb.y = label_pos.y();
-				break;
-			}
-		}
-	}
+	 if (event->button() == Qt::LeftButton) {
+		 if (ui.perBtnChoose->isChecked() == true && ui.ROIBtnChoose->isChecked() != true)
+		 {
+			 QPoint global_pos = event->globalPos();
+			 QPoint label_pos = ui.label_Image->mapFromGlobal(global_pos);
+			 QString x = QString::number(label_pos.x(), 10);
+			 QString y = QString::number(label_pos.y(), 10);
+			 QString point = x + " " + y;
+			 if (ui.perBtnChoose->isChecked()) {
+				 if (percount == 4) { percount = 0; }
+				 percount += 1;
+				 update();
+				 switch (percount) {
+				 case 1:
+					 ui.lineEdit_LT->setText(point);
+					 point_lt.x = label_pos.x();
+					 point_lt.y = label_pos.y();
+					 consoleLog("perspective transformation 左上", "", "左上座標:" + ui.lineEdit_LT->text(), "請選擇右上");
+					 break;
+				 case 2:
+					 ui.lineEdit_RT->setText(point);
+					 point_rt.x = label_pos.x();
+					 point_rt.y = label_pos.y();
+					 consoleLog("perspective transformation 右上", "", "右上座標:" + ui.lineEdit_RT->text(), "請選擇右下");
+					 break;
+				 case 3:
+					 ui.lineEdit_RB->setText(point);
+					 point_rb.x = label_pos.x();
+					 point_rb.y = label_pos.y();
+					 consoleLog("perspective transformation 右下", "", "右下座標:" + ui.lineEdit_RB->text(), "請選擇左下");
+					 break;
+				 case 4:
+					 ui.lineEdit_LB->setText(point);
+					 point_lb.x = label_pos.x();
+					 point_lb.y = label_pos.y();
+					 consoleLog("perspective transformation 左下", "", "左下座標:" + ui.lineEdit_LB->text(), "請按透視變換");
+					 break;
+				 }
+			 }
+		 }
+		 
+		 if (ui.ROIBtnChoose->isChecked() == true)
+		 {
+			 QPoint ROI_pos = event->globalPos();
+			 QPoint roilabel_pos = ui.label_Image->mapFromGlobal(ROI_pos);
+			 QString x = QString::number(roilabel_pos.x(), 10);
+			 QString y = QString::number(roilabel_pos.y(), 10);
+			 QString roipointx = x;
+			 QString roipointy = y;
+			 if (ui.perBtnChoose->isChecked()) {
+				 if (roicount == 2) { roicount = 0; }
+				 roicount += 1;
+				 update();
+				 switch (roicount) {
+				 case 1:
+					 ui.lineEdit_X->setText(roipointx + " " + roipointy);
+					 point_x1 = roipointx;
+					 point_y1 = roipointy;
+					 consoleLog("ROI 左上", "", "x1:" + point_x1 + " y1:" + point_y1, "請選擇右下");
+					 break;
+				 case 2:
+					 ui.lineEdit_Y->setText(roipointx + " " + roipointy);
+					 point_x2 = roipointx;
+					 point_y2 = roipointy;
+					 consoleLog("ROI 右下", "", "x2:"+point_x2+" y2:"+point_y2, "請按ROI");
+					 break;
+				 }
+			 }
+		 }
+	 }
 }
 
 void QtWidgets::consoleLog(QString operation, QString subname, QString filename, QString note) {
@@ -399,5 +463,3 @@ void QtWidgets::consoleLog(QString operation, QString subname, QString filename,
 
 	ui.consoleTable->scrollToBottom(); //滾動至底部
 }
-
-//透視轉換 點位調整 精簡化程式 github目錄調整 簡報優善

@@ -14,8 +14,10 @@ public:
 
     int globalMark;//儲存標記用
     QImage globalImg;//儲存圖片用
-    int count = 0;
-    cv::Point2i point_lt, point_rt, point_rb, point_lb;
+    int percount = 0;
+    int roicount = 0;
+    cv::Point2i point_lt, point_rt, point_lb, point_rb;
+    QString point_x1, point_x2, point_y1, point_y2;
     cv::Mat QImage2cvMat(QImage image)
     {
         cv::Mat mat;
@@ -45,15 +47,22 @@ private:
 private slots:
     void openFile();
     void saveFile();
-    void ROI();
-    void Qthreshold();
+
     void histogram();
-    void QequalizeHist();
+    void qequalizeHist();
+
+    void ROIBtncheek();
+    void ROI();
+
+    void qthreshold();
     void change2Gray();
     void change2HSV();
+    
     void rotate();
-    void QRGB();
+
+    void qRGB();
     void perspective();
+    void perBtncheek();
     void mousePressEvent(QMouseEvent* event);
     void consoleLog(QString operation, QString subname, QString filename, QString note);
 };
