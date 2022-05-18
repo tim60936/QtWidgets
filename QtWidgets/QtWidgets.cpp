@@ -14,7 +14,7 @@
 #include <math.h>
 #include <QPainter>
 using namespace cv;
-//1.4
+//QT_1.4
 QtWidgets::QtWidgets(QWidget *parent)
     : QMainWindow(parent)
 {
