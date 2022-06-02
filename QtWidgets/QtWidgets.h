@@ -60,6 +60,9 @@ private slots:
     
     void rotate();
 
+    void showcamera();
+    void facetest();
+
     void qRGB();
     void perspective();
     void perBtncheek();

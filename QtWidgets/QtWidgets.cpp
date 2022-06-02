@@ -13,8 +13,11 @@
 #include <QPoint>
 #include <math.h>
 #include <QPainter>
+#include<vector>
+#include<iostream>
 using namespace cv;
-//QT_1.4
+using namespace std;
+//QT_1.5
 QtWidgets::QtWidgets(QWidget *parent)
     : QMainWindow(parent)
 {
@@ -34,6 +37,8 @@ QtWidgets::QtWidgets(QWidget *parent)
 	connect(ui.perBtn, SIGNAL(clicked()), this, SLOT(perspective()));
 	connect(ui.ROIBtnChoose, SIGNAL(clicked()), this, SLOT(ROIBtncheek()));
 	connect(ui.roiBtn, SIGNAL(clicked()), this, SLOT(ROI()));
+	connect(ui.cameraBtn, SIGNAL(clicked()), this, SLOT(showcamera()));
+	connect(ui.faceBtn, SIGNAL(clicked()), this, SLOT(facetest()));
 	//QSlider
 	connect(ui.thresholdSlider, SIGNAL(valueChanged(int)), this, SLOT(qthreshold()));
 	connect(ui.rotate_x, SIGNAL(valueChanged(int)), this, SLOT(rotate()));
@@ -462,4 +467,106 @@ void QtWidgets::consoleLog(QString operation, QString subname, QString filename,
 	ui.consoleTable->setItem(rows - 1, 4, new QTableWidgetItem(note));
 
 	ui.consoleTable->scrollToBottom(); //滾動至底部
+}
+
+string path = "E:\\vcpkg\\vcpkg\\buildtrees\\opencv4\\src\\4.5.5-f2b5f31c0d.clean\\data\\haarcascades\\";
+void face_detect(Mat& im, const Mat& gray) {
+	Point text;
+	text.x = 10;
+	text.y = 20;
+	string whatxml_face = path + "haarcascade_frontalface_default.xml";
+	string whatxml_eye = path + "haarcascade_eye.xml";
+	string whatxml_mouth = path + "haarcascade_mcs_mouth.xml";
+	string whatxml_nose = path + "haarcascade_mcs_nose.xml";
+	auto face_cascade = CascadeClassifier(whatxml_face);
+	auto eye_cascade = CascadeClassifier(whatxml_eye);
+	auto mouth_cascade = CascadeClassifier(whatxml_mouth);
+	auto nose_cascade = CascadeClassifier(whatxml_nose);
+	vector< Rect > faces, eye, mouth, nose;
+	face_cascade.detectMultiScale(gray, faces, 2, 3);
+	eye_cascade.detectMultiScale(gray, eye, 1.1, 3);
+	mouth_cascade.detectMultiScale(gray, mouth, 3, 3);
+	nose_cascade.detectMultiScale(gray, nose, 2, 3);
+	int haveface = faces.size();
+	int haveeye = eye.size();
+	int havemouth = mouth.size();
+	int havenose = nose.size();
+	for (auto rect : faces) {
+		rectangle(im, rect, Scalar(0, 255, 0), 3);
+	}
+	for (auto rect : eye) {
+		rectangle(im, rect, Scalar(0, 0, 255), 3);
+	}
+	for (auto rect : mouth) {
+		rectangle(im, rect, Scalar(255, 0, 0), 3);
+	}
+	for (auto rect : nose) {
+		rectangle(im, rect, Scalar(0, 0, 0), 3);
+	}
+	if (haveface >= 0 && haveeye >0 && havemouth >=1 && havenose >=1)
+	{
+		putText(im, "no mask", (text, text), FONT_HERSHEY_DUPLEX, 0.7, (0, 0, 255), 1, 20);
+		imshow("no mask", im);
+		waitKey(0);
+	}
+	else if (haveface >= 0 && haveeye >= 1 && havemouth <= 1 && havenose <=1)
+	{
+		putText(im, "have mask", (text, text), FONT_HERSHEY_DUPLEX, 0.7, (0, 0, 255), 1, 20);
+		imshow("have mask", im);
+		waitKey(0);
+	}
+	else if (haveface <= 0 && haveeye <= 0 && havemouth <= 1 && havenose <=1)
+	{
+		putText(im, "no face", (text, text), FONT_HERSHEY_DUPLEX, 0.7, (0, 0, 255), 1, 20);
+		imshow("no face", im);
+		waitKey(0);
+	}
+	else 
+	{
+		putText(im, "ERROR no mask", (text, text), FONT_HERSHEY_DUPLEX, 0.7, (0, 0, 255), 1, 20);
+		imshow("ERROR no mask", im);
+		waitKey(0);
+	}
+}
+
+void QtWidgets::facetest() {
+	Mat imhave = imread("E:/MyQTProject/QtWidgets/have.png");
+	Mat imnohave = imread("E:/MyQTProject/QtWidgets/nohave.png");
+	Mat gray1, gray2;
+	cvtColor(imhave, gray1, COLOR_BGR2GRAY);
+	cvtColor(imnohave, gray2, COLOR_BGR2GRAY);
+	waitKey(0);
+	face_detect(imhave, gray1);
+	face_detect(imnohave, gray2);
+	destroyAllWindows();
+}
+
+void QtWidgets::showcamera() {
+	VideoCapture cap(0);
+	Mat frame;
+	if (!cap.isOpened()) {
+		consoleLog("Camera", "", "Cannot open camera", "");
+		return;
+	}
+	consoleLog("Camera", "", "Open camera ok" , "按鍵:q 關閉 , w 截圖 , e 口罩辨識");
+	while (true) {
+		cap.read(frame); // or cap >> frame;
+		imshow("live", frame);
+		if (waitKey(1) == 'q') {
+			consoleLog("Camera", "", "Camera close", "");
+			break;
+		}
+		else if (waitKey(1) == 'w') {
+			consoleLog("Camera", "", "Camera screenshot", "");
+			cvtColor(frame, frame, COLOR_RGB2BGR);
+			QImage img = QImage((uchar*)frame.data, frame.cols, frame.rows, frame.step, QImage::Format_RGB888);
+			ui.label_Image->setPixmap(QPixmap::fromImage(img));
+		}
+		else if (waitKey(1) == 'e') {
+			consoleLog("Camera", "", "check mask", "");
+			Mat gray;
+			cvtColor(frame, gray, COLOR_BGR2GRAY);
+			face_detect(frame, gray);
+		}
+	}
 }
