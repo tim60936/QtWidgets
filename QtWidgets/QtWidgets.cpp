@@ -3,6 +3,10 @@
 #include <opencv2/core/core.hpp>
 #include <opencv2/highgui/highgui.hpp>
 #include <opencv2/imgproc/imgproc.hpp>
+#include<vector>
+#include <math.h>
+#include<iostream>
+
 #include <QMessageBox>
 #include <QFileDialog>
 #include <QDebug>
@@ -11,13 +15,11 @@
 #include <QFile>
 #include <QMouseEvent>
 #include <QPoint>
-#include <math.h>
 #include <QPainter>
-#include<vector>
-#include<iostream>
+
 using namespace cv;
 using namespace std;
-//QT_1.5
+//QT_1.6
 QtWidgets::QtWidgets(QWidget *parent)
     : QMainWindow(parent)
 {
@@ -26,12 +28,14 @@ QtWidgets::QtWidgets(QWidget *parent)
 	//QAction
 	QObject::connect(ui.openBtn, &QAction::triggered, this, &QtWidgets::openFile);
 	QObject::connect(ui.saveBtn, &QAction::triggered, this, &QtWidgets::saveFile);
-
 	QObject::connect(ui.histogramBtn, &QAction::triggered, this, &QtWidgets::histogram);
 	QObject::connect(ui.equalHistBtn, &QAction::triggered, this, &QtWidgets::qequalizeHist);
-
 	QObject::connect(ui.hsvBtn, &QAction::triggered, this, &QtWidgets::change2HSV);
 	QObject::connect(ui.grayBtn, &QAction::triggered, this, &QtWidgets::change2Gray);
+	QObject::connect(ui.sharpenBtn, &QAction::triggered, this, &QtWidgets::sharpen);
+	QObject::connect(ui.blurBtn, &QAction::triggered, this, &QtWidgets::gaussian_mean_vague);
+	QObject::connect(ui.gaussblurBtn, &QAction::triggered, this, &QtWidgets::gaussian_vague);
+	QObject::connect(ui.mediblurBtn, &QAction::triggered, this, &QtWidgets::gaussian_mide_vague);
 	//Btn
 	connect(ui.perBtnChoose,SIGNAL(clicked()),this,SLOT(perBtncheek()));
 	connect(ui.perBtn, SIGNAL(clicked()), this, SLOT(perspective()));
@@ -122,7 +126,6 @@ void QtWidgets::histogram() {
 	for (int i = 0; i < 256; i++)
 	{
 		float binValue = dstHist.at<float>(i);
-
 		int realValue = saturate_cast<int>(binValue * hpt / maxValue);
 		line(dstImage, Point(i, size - 1), Point(i, size - realValue), Scalar(255));
 	}
@@ -140,13 +143,12 @@ void QtWidgets::qequalizeHist() {
 	equalizeHist(Gray_image, result);
 
 	Mat dstHist;
-	int dims = 1;
 	float hranges[] = { 0, 255 };
 	const float* ranges[] = { hranges };
 	int size = 256;
 	int channels = 0;
 	//­計算影像的直方
-	calcHist(&result, 1, &channels, Mat(), dstHist, dims, &size, ranges);
+	calcHist(&result, 1, &channels, Mat(), dstHist, 1, &size, ranges);
 	Mat dstHistImage(size, size, CV_8U, Scalar(0));
 	double minValue = 0;
 	double dstMaxValue = 0;
@@ -259,6 +261,7 @@ void QtWidgets::rotate(){
 	imshow("result", result);
  }
 
+//RGB
 void QtWidgets::qRGB() {
 	Mat Ori_image = QImage2cvMat(ui.label_Image->pixmap()->toImage());
 	Mat rgb_image;
@@ -283,6 +286,7 @@ void QtWidgets::qRGB() {
 	imshow("RGB圖", rgb_image);
 }
 
+//透視轉換
 void QtWidgets::perspective(){
 	if(ui.lineEdit_LB->text()==NULL || ui.lineEdit_LT->text()==NULL || 
 		ui.lineEdit_RB->text()==NULL || ui.lineEdit_RT->text()==NULL){ 
@@ -372,6 +376,7 @@ void QtWidgets::ROI()
 	}
 }
 
+//ROIcheek
 void QtWidgets::ROIBtncheek()
 {
 	if (ui.ROIBtnChoose->isChecked() == true)
@@ -380,6 +385,7 @@ void QtWidgets::ROIBtncheek()
 	}
 }
 
+//滑鼠選取
 void QtWidgets::mousePressEvent(QMouseEvent* event)
 {
 	// 如果有勾選、按下滑鼠左鍵、左上順時鐘挑選
@@ -422,8 +428,8 @@ void QtWidgets::mousePressEvent(QMouseEvent* event)
 					 break;
 				 }
 			 }
-		 }
-		 
+		 }	 
+
 		 if (ui.ROIBtnChoose->isChecked() == true)
 		 {
 			 QPoint ROI_pos = event->globalPos();
@@ -455,6 +461,7 @@ void QtWidgets::mousePressEvent(QMouseEvent* event)
 	 }
 }
 
+//狀態列顯示
 void QtWidgets::consoleLog(QString operation, QString subname, QString filename, QString note) {
 	int rows = ui.consoleTable->rowCount();
 	ui.consoleTable->setRowCount(++rows);
@@ -469,6 +476,7 @@ void QtWidgets::consoleLog(QString operation, QString subname, QString filename,
 	ui.consoleTable->scrollToBottom(); //滾動至底部
 }
 
+//口罩辨識
 string path = "E:\\vcpkg\\vcpkg\\buildtrees\\opencv4\\src\\4.5.5-f2b5f31c0d.clean\\data\\haarcascades\\";
 void face_detect(Mat& im, const Mat& gray) {
 	Point text;
@@ -529,18 +537,17 @@ void face_detect(Mat& im, const Mat& gray) {
 	}
 }
 
+//口罩辨識測試
 void QtWidgets::facetest() {
-	Mat imhave = imread("E:/MyQTProject/QtWidgets/have.png");
-	Mat imnohave = imread("E:/MyQTProject/QtWidgets/nohave.png");
-	Mat gray1, gray2;
+	Mat imhave = imread("E:/MyQTProject/QtWidgets/photo/test1.png");
+	Mat gray1;
 	cvtColor(imhave, gray1, COLOR_BGR2GRAY);
-	cvtColor(imnohave, gray2, COLOR_BGR2GRAY);
 	waitKey(0);
 	face_detect(imhave, gray1);
-	face_detect(imnohave, gray2);
 	destroyAllWindows();
 }
 
+//相機功能
 void QtWidgets::showcamera() {
 	VideoCapture cap(0);
 	Mat frame;
@@ -569,4 +576,46 @@ void QtWidgets::showcamera() {
 			face_detect(frame, gray);
 		}
 	}
+}
+
+//均值模糊
+void QtWidgets::gaussian_mean_vague() {
+	consoleLog("Balanced blur", "", "", "");
+	Mat src = QImage2cvMat(ui.label_Image->pixmap()->toImage());
+	Mat dst1;
+	blur(src, dst1, Size(5, 5), Point(-1, -1), 4);
+	imshow("Balanced blur", dst1);
+	waitKey(0);
+}
+//高斯模糊
+void QtWidgets::gaussian_vague() {
+	consoleLog("Gaussian blur", "", "", "");
+	Mat src = QImage2cvMat(ui.label_Image->pixmap()->toImage());
+	Mat  dst1;
+	GaussianBlur(src, dst1, Size(15, 15), 15, 0, 4);
+	imshow("Gaussian blur", dst1);
+	waitKey(0);
+}
+//中值模糊
+void QtWidgets::gaussian_mide_vague() {
+	consoleLog("median blur", "", "", "");
+	Mat src = QImage2cvMat(ui.label_Image->pixmap()->toImage());
+	Mat dst1;
+	medianBlur(src, dst1, 3);
+	imshow("median blur", dst1);
+	waitKey(0);
+}
+
+void QtWidgets::sharpen() {
+	consoleLog("sharpen", "", "" , "");
+	Mat src = QImage2cvMat(ui.label_Image->pixmap()->toImage());
+	Mat sharpen_op = (Mat_<char>(3, 3) << 0, -1, 0,
+		-1, 5, -1,
+		0, -1, 0);
+	Mat result;
+	filter2D(src, result, CV_32F, sharpen_op);
+	convertScaleAbs(result, result);
+	imshow("sharpen image", result);
+	waitKey(0);
+
 }

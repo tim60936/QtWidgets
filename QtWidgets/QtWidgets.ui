@@ -651,9 +651,19 @@
     <addaction name="grayBtn"/>
     <addaction name="hsvBtn"/>
    </widget>
+   <widget class="QMenu" name="menuai6cj6">
+    <property name="title">
+     <string>模糊、銳化</string>
+    </property>
+    <addaction name="blurBtn"/>
+    <addaction name="gaussblurBtn"/>
+    <addaction name="mediblurBtn"/>
+    <addaction name="sharpenBtn"/>
+   </widget>
    <addaction name="menu"/>
    <addaction name="menu_2"/>
    <addaction name="menu_3"/>
+   <addaction name="menuai6cj6"/>
   </widget>
   <widget class="QToolBar" name="mainToolBar">
    <attribute name="toolBarArea">
@@ -692,6 +702,46 @@
   <action name="hsvBtn">
    <property name="text">
     <string>HSV</string>
+   </property>
+  </action>
+  <action name="gaus_lowBtn">
+   <property name="text">
+    <string>lower</string>
+   </property>
+  </action>
+  <action name="fourierBtn">
+   <property name="text">
+    <string>Fourier</string>
+   </property>
+  </action>
+  <action name="gaus_meanBtn">
+   <property name="text">
+    <string>均值模糊</string>
+   </property>
+  </action>
+  <action name="blurBtn">
+   <property name="text">
+    <string>均值模糊</string>
+   </property>
+  </action>
+  <action name="gaussblurBtn">
+   <property name="text">
+    <string>高斯模糊</string>
+   </property>
+  </action>
+  <action name="mediblurBtn">
+   <property name="text">
+    <string>中值模糊</string>
+   </property>
+  </action>
+  <action name="twoblurBtn">
+   <property name="text">
+    <string>双边模糊</string>
+   </property>
+  </action>
+  <action name="sharpenBtn">
+   <property name="text">
+    <string>銳化</string>
    </property>
   </action>
  </widget>

@@ -4,7 +4,6 @@
 #include <opencv2/imgproc/types_c.h>
 #include <ui_QtWidgets.h>
 
-
 class QtWidgets : public QMainWindow
 {
     Q_OBJECT
@@ -47,25 +46,23 @@ private:
 private slots:
     void openFile();
     void saveFile();
-
     void histogram();
     void qequalizeHist();
-
     void ROIBtncheek();
     void ROI();
-
     void qthreshold();
     void change2Gray();
     void change2HSV();
-    
     void rotate();
-
     void showcamera();
     void facetest();
-
     void qRGB();
     void perspective();
     void perBtncheek();
+    void sharpen();
+    void gaussian_mean_vague();
+    void gaussian_vague();
+    void gaussian_mide_vague();
     void mousePressEvent(QMouseEvent* event);
     void consoleLog(QString operation, QString subname, QString filename, QString note);
 };
